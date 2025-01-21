@@ -13,6 +13,8 @@ public static class PersistentDataStore
         }
     }
 
+    public static float assessmentTime = 0f;
+
     public static Dictionary<string, ErrorStatusData> errorStatuses = new Dictionary<string, ErrorStatusData>();
 }
 

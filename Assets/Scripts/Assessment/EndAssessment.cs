@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class EndAssessment : MonoBehaviour
 {
+    public Timer timer;
     public Button exitAssessmentButton; // Assign in Inspector
     public string summarySceneName = "SummaryScene";
 
@@ -32,6 +33,8 @@ public class EndAssessment : MonoBehaviour
         GroundingRodError();
         FireExtinguisherError();
         FODError();
+
+        timer.StopTimer();
 
         // Load the summary scene
         SceneManager.LoadScene(summarySceneName);

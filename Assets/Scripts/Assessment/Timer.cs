@@ -6,98 +6,76 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
+    [Header("UI Elements")]
     public TextMeshProUGUI timerText;
-    public float initialTime = 60f;
-    private float currentTime;
+
+    public float currentTime = 0f;
     public bool isRunning = false;
-    public GameObject playerObject;
-    public TextMeshProUGUI gameOverText;
 
-    void Start()
+    private void Start()
     {
-        currentTime = initialTime;
+        // Initialize display (shows 00:00 at start)
         UpdateTimeDisplay();
-        HideGameOverText();
     }
 
-    public void StartTimer()
+    private void Update()
     {
-        isRunning = true;
-        currentTime = initialTime;
-    }
-
-    void Update()
-    {
-        if(isRunning)
+        // If timer is running, accumulate time
+        if (isRunning)
         {
-            currentTime -= Time.deltaTime;
-            if(currentTime<=0)
-            {
-                currentTime = 0;
-                isRunning = false;
-                OnTimerFinished();
-            }
+            currentTime += Time.deltaTime;
             UpdateTimeDisplay();
         }
     }
 
-    void UpdateTimeDisplay()
+    /// <summary>
+    /// Start the timer from zero.
+    /// </summary>
+    public void StartTimer()
     {
-        int minutes = Mathf.FloorToInt(currentTime / 60);
-        int seconds = Mathf.FloorToInt(currentTime % 60);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        currentTime = 0f;   // reset to 0
+        isRunning = true;   // begin counting up
     }
 
-    void OnTimerFinished()
+    /// <summary>
+    /// Stop the timer and store the time in a persistent variable.
+    /// Call this when the user clicks "Exit Assessment" or similar.
+    /// </summary>
+    public void StopTimer()
     {
-        Debug.Log("Time's up!");
-        StopPlayerMovement();
-        ShowGameOverText();
-        FreezeVRView();
+        isRunning = false;
+
+        // Store the final time so it can be accessed in another scene
+        PersistentDataStore.assessmentTime = currentTime;
+
+        Debug.Log($"Timer stopped at: {FormatTime(currentTime)}");
     }
 
-    void StopPlayerMovement()
-    {
-        if (playerObject!=null)
-        {
-            Rigidbody rb = playerObject.GetComponent<Rigidbody>();
-            if (rb!=null)
-            {
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
-        }
-    }
-
-    void ShowGameOverText()
-    {
-        if(gameOverText!=null)
-        {
-            gameOverText.gameObject.SetActive(true);
-        }
-    }
-
-    void HideGameOverText()
-    {
-        if (gameOverText!=null)
-        {
-            gameOverText.gameObject.SetActive(false);
-        }
-    }
-
+    /// <summary>
+    /// Optional: Reset the timer to 0 and pause it.
+    /// </summary>
     public void ResetTimer()
     {
         isRunning = false;
-        currentTime = initialTime;
-        HideGameOverText();
+        currentTime = 0f;
+        UpdateTimeDisplay();
     }
 
-    void FreezeVRView()
+    /// <summary>
+    /// Updates the on-screen text to show MM:SS
+    /// </summary>
+    private void UpdateTimeDisplay()
     {
-        var playerMovement = playerObject.GetComponent<MonoBehaviour>();
-        if(playerMovement!=null)
-        {
-            playerMovement.enabled = false;
-        }
+        timerText.text = FormatTime(currentTime);
+    }
+
+    /// <summary>
+    /// Helper method to format a float time as MM:SS
+    /// </summary>
+    private string FormatTime(float timeInSeconds)
+    {
+        int minutes = Mathf.FloorToInt(timeInSeconds / 60f);
+        int seconds = Mathf.FloorToInt(timeInSeconds % 60f);
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }

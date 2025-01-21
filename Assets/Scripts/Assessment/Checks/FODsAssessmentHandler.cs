@@ -16,6 +16,9 @@ public class FODsAssessmentHandler : MonoBehaviour
     public GameObject axe;
     public GameObject hammer;
 
+    [Header("Particle Effect Prefab")]
+    public GameObject clearEffectPrefab;  // Drag your particle prefab here in the Inspector
+
     // Internally track which FODs are currently active in the scene
     private List<GameObject> activeFODs = new List<GameObject>();
 
@@ -121,6 +124,11 @@ public class FODsAssessmentHandler : MonoBehaviour
         {
             Debug.LogWarning("Invalid FOD or FOD not in active list.");
             return;
+        }
+
+        if (clearEffectPrefab != null)
+        {
+            Instantiate(clearEffectPrefab, fod.transform.position, Quaternion.identity);
         }
 
         // Deactivate the FOD game object

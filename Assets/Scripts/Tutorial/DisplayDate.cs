@@ -14,7 +14,7 @@ public class DisplayDate : MonoBehaviour
     void Start()
     {
         // Get the current date minus one month
-        DateTime oneMonthAgo = DateTime.Now.AddMonths(-12);
+        DateTime oneMonthAgo = DateTime.Now.AddMonths(-1);
 
         // Format the date (e.g., "02 Dec 2024")
         string formattedDate = oneMonthAgo.ToString("dd MMM yyyy");
