@@ -8,7 +8,6 @@ public class ErrorRandomiser : MonoBehaviour
     private List<GameObject> activeFODs = new List<GameObject>();
     private HashSet<GameObject> interactedFODs = new HashSet<GameObject>();
 
-
     [Header("Antenna Check")]
     public GameObject antennaDeployed;
     public GameObject antennaUndeployed;
@@ -40,18 +39,6 @@ public class ErrorRandomiser : MonoBehaviour
     public GameObject invalidGroundingRod;
     public GameObject validGroundingRod;
 
-    //[Header("FOD Check")]
-    //public GameObject firstAidKit;
-    //public GameObject aluminiumCan;
-    //public GameObject wrench;
-    //public GameObject brokenBottle;
-    //public GameObject bucket;
-    //public GameObject lunchBox;
-    //public GameObject paperBox;
-    //public GameObject newspaper;
-    //public GameObject axe;
-    //public GameObject hammer;
-
     private void Start()
     {
         InitializeErrors();
@@ -67,7 +54,6 @@ public class ErrorRandomiser : MonoBehaviour
         InitializeLeftLadder();
         InitializeFireExtinguisher();
         InitializeGroundingRod();
-        //InitializeFODs();
     }
 
     private void InitializeAntenna()
@@ -173,10 +159,6 @@ public class ErrorRandomiser : MonoBehaviour
 
     private void InitializeFireExtinguisher()
     {
-        //bool isErrorActive = Random.value > 0.5f;
-        //expiredFireExtinguisher.SetActive(isErrorActive);
-        //validFireExtinguisher.SetActive(!isErrorActive);
-
         if (!PersistentDataStore.errorStatuses.ContainsKey("Fire Extinguisher Error"))
         {
             PersistentDataStore.errorStatuses["Fire Extinguisher Error"] = new ErrorStatusData();
@@ -201,34 +183,4 @@ public class ErrorRandomiser : MonoBehaviour
             ? ErrorStatus.NotCorrected
             : ErrorStatus.NotTested;
     }
-
-    //private void InitializeFODs()
-    //{
-        //List<GameObject> fodObjects = new List<GameObject>
-        //{
-            //firstAidKit, aluminiumCan, wrench, brokenBottle,
-            //bucket, lunchBox, paperBox, newspaper, axe, hammer
-        //};
-
-        //int activeFODCount = 0;
-
-        //foreach (var fod in fodObjects)
-        //{
-            //bool isActive = Random.value > 0.5f;
-            //fod.SetActive(isActive);
-            //if (isActive) activeFODCount++;
-        //}
-
-        //while (activeFODCount < 5)
-        //{
-            //foreach (var fod in fodObjects)
-            //{
-                //if (!fod.activeSelf && activeFODCount < 5)
-                //{
-                    //fod.SetActive(true);
-                    //activeFODCount++;
-                //}
-            //}
-        //}
-    //}
 }

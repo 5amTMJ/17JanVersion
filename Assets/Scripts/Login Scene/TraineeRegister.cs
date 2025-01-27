@@ -136,12 +136,23 @@ public class TraineeRegister : MonoBehaviour
         messageText.text = "";
     }
 
-    public static void UpdateTraineeRow(string username, float finalTime,
-    string antennaStatus, string cableStatus, string rightCornerStatus,
-    string leftCornerStatus, string leftLadderStatus, string rightLadderStatus,
-    string groundingRodStatus, string fireExtinguisherStatus, string fodStatus)
+    public static void UpdateTraineeRow(
+    string username,
+    float finalTime,
+    string antennaStatus,
+    string cableStatus,
+    string rightCornerStatus,
+    string leftCornerStatus,
+    string leftLadderStatus,
+    string rightLadderStatus,
+    string groundingRodStatus,
+    string fireExtinguisherStatus,
+    string fodStatus,
+    int correctedCount,
+    int testedCount
+)
     {
-        // 1) Read all lines from CSV
+        // 1) Read CSV lines
         string filePath = Application.dataPath + "/TraineeAccounts.csv";
         if (!File.Exists(filePath))
         {
@@ -152,42 +163,62 @@ public class TraineeRegister : MonoBehaviour
         List<string> lines = new List<string>(File.ReadAllLines(filePath));
         bool foundUser = false;
 
-        // 2) Loop and look for the user
+        // 2) Loop through lines, find user row
         for (int i = 0; i < lines.Count; i++)
         {
+            // Split by commas
             string[] columns = lines[i].Split(',');
-
             if (columns.Length > 0 && columns[0].Trim().Equals(username, System.StringComparison.OrdinalIgnoreCase))
             {
-                // 3) Overwrite the entire line with new data
-                lines[i] = GenerateCsvLine(username, finalTime, antennaStatus, cableStatus, rightCornerStatus,
-                                           leftCornerStatus, leftLadderStatus, rightLadderStatus,
-                                           groundingRodStatus, fireExtinguisherStatus, fodStatus);
-
+                // 3) Overwrite line with new data
+                lines[i] = GenerateCsvLine(
+                    username, finalTime, antennaStatus, cableStatus, rightCornerStatus,
+                    leftCornerStatus, leftLadderStatus, rightLadderStatus,
+                    groundingRodStatus, fireExtinguisherStatus, fodStatus,
+                    correctedCount, testedCount
+                );
                 foundUser = true;
                 break;
             }
         }
 
-        // 4) If user row not found, append a new line
+        // 4) If user row not found, append new line
         if (!foundUser)
         {
-            lines.Add(GenerateCsvLine(username, finalTime, antennaStatus, cableStatus, rightCornerStatus,
-                                      leftCornerStatus, leftLadderStatus, rightLadderStatus,
-                                      groundingRodStatus, fireExtinguisherStatus, fodStatus));
+            lines.Add(GenerateCsvLine(
+                username, finalTime, antennaStatus, cableStatus, rightCornerStatus,
+                leftCornerStatus, leftLadderStatus, rightLadderStatus,
+                groundingRodStatus, fireExtinguisherStatus, fodStatus,
+                correctedCount, testedCount
+            ));
         }
 
-        // 5) Write all lines back to the file
+        // 5) Write lines back to file
         File.WriteAllLines(filePath, lines.ToArray());
     }
 
-    private static string GenerateCsvLine(string username, float finalTime,
-        string antennaStatus, string cableStatus, string rightCornerStatus,
-        string leftCornerStatus, string leftLadderStatus, string rightLadderStatus,
-        string groundingRodStatus, string fireExtinguisherStatus, string fodStatus)
+    // Helper method
+    private static string GenerateCsvLine(
+        string username,
+        float finalTime,
+        string antennaStatus,
+        string cableStatus,
+        string rightCornerStatus,
+        string leftCornerStatus,
+        string leftLadderStatus,
+        string rightLadderStatus,
+        string groundingRodStatus,
+        string fireExtinguisherStatus,
+        string fodStatus,
+        int correctedCount,
+        int testedCount
+    )
     {
-        // E.g.   username, finalTime, antenna, cable, rightCorner, ...
-        // For finalTime, let's store it as an integer or float
+        // Compose each column in the order you desire:
+        //  0: username
+        //  1: finalTime
+        //  2..: statuses
+        // last: correctedCount and testedCount
         return string.Join(",", new string[]
         {
         username,
@@ -200,7 +231,9 @@ public class TraineeRegister : MonoBehaviour
         rightLadderStatus,
         groundingRodStatus,
         fireExtinguisherStatus,
-        fodStatus
+        fodStatus,
+        correctedCount.ToString(),
+        testedCount.ToString()
         });
     }
 
